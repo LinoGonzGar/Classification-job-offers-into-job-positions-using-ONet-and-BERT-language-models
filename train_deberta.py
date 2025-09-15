@@ -55,9 +55,9 @@ def compute_metrics(p):
     predictions = np.argmax(predictions, axis=1)
     metrics = {
         "accuracy": accuracy_score(labels, predictions),
-        "precision": precision_score(labels, predictions, average="weighted"),
-        "recall": recall_score(labels, predictions, average="weighted"),
-        "f1": f1_score(labels, predictions, average="weighted"),
+        "precision_macro": precision_score(labels, predictions, average="macro", zero_division=0),
+        "recall_macro": recall_score(labels, predictions, average="macro", zero_division=0),
+        "f1_macro": f1_score(labels, predictions, average="macro", zero_division=0),
     }
     f1_per_class = f1_score(labels, predictions, average=None)
     for i, f1_val in enumerate(f1_per_class):
@@ -159,3 +159,4 @@ if __name__ == "__main__":
 
     wandb.finish()
     print(f"Best hyperparameters for {MODEL_NAME}: {study.best_params}")
+
