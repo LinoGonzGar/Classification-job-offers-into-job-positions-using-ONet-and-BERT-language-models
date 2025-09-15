@@ -22,8 +22,6 @@ Each model is fine-tuned on the **job offers dataset** and evaluated with the sa
 ├── train_bert.py # Train with BERT
 ├── train_deberta.py # Train with DeBERTa
 ├── train_roberta.py # Train with RoBERTa
-├── dataset_train.csv # Training dataset
-├── dataset_test.csv # Test dataset
 ├── requirements.txt # Dependencies
 └── README.md # Documentation
 ```
@@ -106,7 +104,9 @@ Usage:
         --train-out dataset_train.csv \
         --test-out dataset_test.csv \
         --report-dir ./reports
-        
+Example:
+    python balance_dataset.py
+    
 ### 5. Train models
 
 Run the training script for the desired model:
@@ -142,6 +142,7 @@ You need a wandb account and to log in locally:
 ```
 wandb login
 ```
+
 
 
 
