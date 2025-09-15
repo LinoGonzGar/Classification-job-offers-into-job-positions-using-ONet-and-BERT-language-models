@@ -17,6 +17,8 @@ Each model is fine-tuned on the **job offers dataset** and evaluated with the sa
 ```
 ├── list_job_scraper.py # List Job URLs from CareerOneStop
 ├── content_job_scraper.py # Job Details Scraper for CareerOneStop
+├── build_dataset.py # Build Unified Dataset from Job Details Scraper
+├── balance_dataset.py # Balance Job Descriptions Dataset
 ├── train_bert.py # Train with BERT
 ├── train_deberta.py # Train with DeBERTa
 ├── train_roberta.py # Train with RoBERTa
@@ -77,19 +79,35 @@ Example:
 
 This is the call to download the specific data for each job posting downloaded in the previous step.
 
-### 1. Prepare datasets
+### 3. Prepare datasets
 
-Your CSV files must contain:
+build_dataset.py merges all per-occupation CSVs produced in **Step 2** into a single `dataset.csv`, adds derived fields from the job URL (e.g., `cod_empleo`, `family_empleo`), and encodes a numeric `Label`.The description field is also preprocessed and offers with fewer than the number of words indicated in the call (50 by default) are eliminated.
 
-- **`description`:** job offer text  
-- **`Label`:** target occupational family (integer)
+Usage:
+    python build_dataset.py \
+        --input-dir output \
+        --output dataset.csv \
+        --min-words 50 \
+        --occupations-csv All_Occupations.csv \
+        --occupation-column Occupation
 
-**Example:**
-description,Label
-"Software developer needed for backend services",5
-"Nurse position available at local hospital",2
+Example:
+    python build_dataset.py
 
-### 2. Train models
+### 4. Balance datasets
+
+balance_dataset.py balances classes via undersampling (down to the minority class size) and performs a stratified train/test split by 'Label'.
+
+Usage:
+    python balance_dataset.py \
+        --input dataset.csv \
+        --test-size 0.1 \
+        --random-state 42 \
+        --train-out dataset_train.csv \
+        --test-out dataset_test.csv \
+        --report-dir ./reports
+        
+### 5. Train models
 
 Run the training script for the desired model:
 ```python
@@ -120,25 +138,11 @@ Each script will:
 
 - Log metrics to Weights & Biases
 
-### 3. Weights & Biases
-
 You need a wandb account and to log in locally:
 ```
 wandb login
 ```
-### 4. Outputs
 
-**Metrics:** accuracy, precision, recall, F1 score
-
-**Confusion matrix:** available in wandb dashboard
-
-**Predictions CSV:** file predictions_<model>.csv with:
-
-  - Original job offer text
-  
-  - True occupational label
-  
-  - Predicted label
 
 
 
