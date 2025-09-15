@@ -1,10 +1,10 @@
 # Classification of job offers into job positions using O*Net and BERT language models
 
 **Abstract:**
-Classifying job offers into occupational categories is a fundamental task in candidate-job matching. Comprehensive occupational databases such as O*NET or ESCO provide detailed taxonomies of interrelated job positions, which can be leveraged to match the textual content of job postings. In this work, we explore the effectiveness of fine-tuning existing language models (LMs) to classify job offers with occupational descriptors from O*NET. This enables a more precise assessment of candidate suitability by identifying the specific knowledge and skills required for each position, and facilitates the automation of recruitment processes by helping to mitigate human bias and subjectivity in candidate selection. The best performance was achieved with the DeBERTa model, although the BERT model
-also produced strong results. It was also observed that these models tend to reach optimal performance after only a few training epochs, and that training with smaller, balanced datasets has also proven to be effective.
+Classifying job offers into occupational categories is a fundamental task in human resource information systems, as it improves and streamlines indexing, search, and matching between opening and job seekers. Comprehensive
+occupational databases such as O*NET or ESCO provide detailed taxonomies of interrelated positions that can be leveraged to align the textual content of postings with occupational categories, thereby facilitating standardization, cross-system interoperability, and access to metadata for each occupation (e.g., tasks, knowledge, skills, and abilities).
 
-This project trains and compares **three transformer-based models** to classify **job offers** into occupational families defined by the **O*NET database**.
+In this work, we explore the effectiveness of fine-tuning existing language models (LMs) to classify job offers with occupational descriptors from O*NET. This enables a more precise assessment of candidate suitability by identifying the specific knowledge and skills required for each position, and helps automate recruitment processes by mitigating human bias and subjectivity in candidate selection. We evaluate three representative BERT-like models: BERT, RoBERTa, and DeBERTa. BERT serves as the baseline encoder-only architecture; RoBERTa incorporates advances in pretraining objectives and data scale; and DeBERTa introduces architectural improvements through disentangled attention mechanisms. The best performance was achieved with the DeBERTa model, although the other models also produced strong results, and no statistically significant differences were observed across models. we also find that these models typically reach optimal performance after only a few training epochs, and that training with smaller, balanced datasets is effective. Consequently, comparable results can be obtained with models that require fewer computational resources and less training time, facilitating deployment and practical use.
 
 ## Models Used
 - [BERT](https://huggingface.co/bert-base-uncased) (`bert-base-uncased`)
@@ -57,7 +57,7 @@ This is the call for applications to download up to 3,000 job postings (12 pages
 
 content_job_scraper.py takes the CSV files of job posting URLs by occupation from the previous step and extracts the title, company, description, and URL for each job posting. The results are saved in a CSV file for each occupation.
 
-Usage:
+**Usage:**
     python content_job_scraper.py \
         --occupations-csv All_Occupations.csv \
         --occupation-column Occupation \
@@ -72,16 +72,16 @@ Usage:
         --proxies-file proxies.txt \
         --max-requests-per-proxy 10
 
-Example:
+**Example:**
     python content_job_scraper.py
 
 This is the call to download the specific data for each job posting downloaded in the previous step.
 
 ### 3. Prepare datasets
 
-build_dataset.py merges all per-occupation CSVs produced in **Step 2** into a single `dataset.csv`, adds derived fields from the job URL (e.g., `cod_empleo`, `family_empleo`), and encodes a numeric `Label`.The description field is also preprocessed and offers with fewer than the number of words indicated in the call (50 by default) are eliminated.
+build_dataset.py merges all per-occupation CSVs produced in Step 2 into a single `dataset.csv`, adds derived fields from the job URL (e.g., `cod_empleo`, `family_empleo`), and encodes a numeric `Label`.The description field is also preprocessed and offers with fewer than the number of words indicated in the call (50 by default) are eliminated.
 
-Usage:
+**Usage:**
     python build_dataset.py \
         --input-dir output \
         --output dataset.csv \
@@ -89,14 +89,14 @@ Usage:
         --occupations-csv All_Occupations.csv \
         --occupation-column Occupation
 
-Example:
+**Example:**
     python build_dataset.py
 
 ### 4. Balance datasets
 
 balance_dataset.py balances classes via undersampling (down to the minority class size) and performs a stratified train/test split by 'Label'.
 
-Usage:
+**Usage:**
     python balance_dataset.py \
         --input dataset.csv \
         --test-size 0.1 \
@@ -104,7 +104,7 @@ Usage:
         --train-out dataset_train.csv \
         --test-out dataset_test.csv \
         --report-dir ./reports
-Example:
+**Example:**
     python balance_dataset.py
     
 ### 5. Train models
@@ -142,6 +142,7 @@ You need a wandb account and to log in locally:
 ```
 wandb login
 ```
+
 
 
 
